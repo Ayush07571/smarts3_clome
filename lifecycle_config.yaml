@@ -1,0 +1,46 @@
+bucket: "test-bucket"
+rules:
+  - name: "Archive everything older than 1 day"
+    include_prefix: ""         # empty = all keys
+    exclude_prefixes: ["archive/"]
+    older_than_days: 1         # set 0 for quick testing
+    action: "move_to_archive"
+    archive_prefix: "archive/"
+options:
+  dry_run: true                # start with true for safety
+  page_size: 1000
+
+rules:
+  - name: Archive old files
+    prefix: ""
+    older_than_days: 0   # move files older than 0 days
+    destination_prefix: "archive/"
+    dry_run: true        # start with dry-run so it doesn’t actually move
+
+bucket: test-bucket
+
+options:
+  dry_run: true    # change to false to really apply
+  page_size: 1000
+
+rules:
+rules:
+  - name: "Move old text files"
+    # This rule will now look everywhere...
+    include_prefix: "" 
+    # ...EXCEPT in the archive folder itself.
+    exclude_prefixes:
+      - "archive/"
+    older_than_days: 30
+    action: "move"
+    archive_prefix: "archive/"
+    filter: 
+      suffix: ".txt"
+
+  - name: "Delete old log files"
+    include_prefix: ""
+    exclude_prefixes: []
+    older_than_days: 0
+    action: delete
+    filter: 
+      suffix: ".log"
